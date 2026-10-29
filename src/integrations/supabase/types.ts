@@ -7,14 +7,133 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
     PostgrestVersion: "14.18"
   }
   public: {
     Tables: {
-      [_ in never]: never
+      employees: {
+        Row: {
+          id: string
+          name: string
+          email: string | null
+          position: string
+          hours_per_week: number
+          employment_type: string
+          phone: string | null
+          color: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          email?: string | null
+          position: string
+          hours_per_week?: number
+          employment_type?: string
+          phone?: string | null
+          color?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          email?: string | null
+          position?: string
+          hours_per_week?: number
+          employment_type?: string
+          phone?: string | null
+          color?: string | null
+          created_at?: string
+        }
+      }
+      business_settings: {
+        Row: {
+          id: string
+          business_name: string
+          open_time: string
+          close_time: string
+          open_days: number[]
+          min_employees_per_shift: number
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          business_name?: string
+          open_time?: string
+          close_time?: string
+          open_days?: number[]
+          min_employees_per_shift?: number
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          business_name?: string
+          open_time?: string
+          close_time?: string
+          open_days?: number[]
+          min_employees_per_shift?: number
+          created_at?: string
+        }
+      }
+      absences: {
+        Row: {
+          id: string
+          employee_id: string
+          start_date: string
+          end_date: string
+          reason: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          employee_id: string
+          start_date: string
+          end_date: string
+          reason?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          employee_id?: string
+          start_date?: string
+          end_date?: string
+          reason?: string | null
+          created_at?: string
+        }
+      }
+      shifts: {
+        Row: {
+          id: string
+          employee_id: string
+          date: string
+          start_time: string
+          end_time: string
+          position: string | null
+          notes: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          employee_id: string
+          date: string
+          start_time: string
+          end_time: string
+          position?: string | null
+          notes?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          employee_id?: string
+          date?: string
+          start_time?: string
+          end_time?: string
+          position?: string | null
+          notes?: string | null
+          created_at?: string
+        }
+      }
     }
     Views: {
       [_ in never]: never
@@ -32,7 +151,6 @@ export type Database = {
 }
 
 type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
-
 type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
@@ -129,23 +247,6 @@ export type Enums<
   ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
-    : never
-
-export type CompositeTypes<
-  PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof DatabaseWithoutInternals },
-  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
-    schema: keyof DatabaseWithoutInternals
-  }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
-    : never) = never,
-> = PublicCompositeTypeNameOrOptions extends {
-  schema: keyof DatabaseWithoutInternals
-}
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
-    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {

@@ -10,6 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnsatteIndexRouteImport } from './routes/ansatte/index'
+import { Route as VakterIndexRouteImport } from './routes/vakter/index'
+import { Route as FravaerIndexRouteImport } from './routes/fravaer/index'
+import { Route as InnstillingerIndexRouteImport } from './routes/innstillinger/index'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -17,53 +21,74 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 
+const AnsatteIndexRoute = AnsatteIndexRouteImport.update({
+  id: '/ansatte/',
+  path: '/ansatte/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+const VakterIndexRoute = VakterIndexRouteImport.update({
+  id: '/vakter/',
+  path: '/vakter/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+const FravaerIndexRoute = FravaerIndexRouteImport.update({
+  id: '/fravaer/',
+  path: '/fravaer/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+const InnstillingerIndexRoute = InnstillingerIndexRouteImport.update({
+  id: '/innstillinger/',
+  path: '/innstillinger/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ansatte/': typeof AnsatteIndexRoute
+  '/vakter/': typeof VakterIndexRoute
+  '/fravaer/': typeof FravaerIndexRoute
+  '/innstillinger/': typeof InnstillingerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ansatte': typeof AnsatteIndexRoute
+  '/vakter': typeof VakterIndexRoute
+  '/fravaer': typeof FravaerIndexRoute
+  '/innstillinger': typeof InnstillingerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ansatte/': typeof AnsatteIndexRoute
+  '/vakter/': typeof VakterIndexRoute
+  '/fravaer/': typeof FravaerIndexRoute
+  '/innstillinger/': typeof InnstillingerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/ansatte/' | '/vakter/' | '/fravaer/' | '/innstillinger/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/ansatte' | '/vakter' | '/fravaer' | '/innstillinger'
+  id: '__root__' | '/' | '/ansatte/' | '/vakter/' | '/fravaer/' | '/innstillinger/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-}
-
-declare module '@tanstack/react-router' {
-  interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-  }
+  AnsatteIndexRoute: typeof AnsatteIndexRoute
+  VakterIndexRoute: typeof VakterIndexRoute
+  FravaerIndexRoute: typeof FravaerIndexRoute
+  InnstillingerIndexRoute: typeof InnstillingerIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnsatteIndexRoute: AnsatteIndexRoute,
+  VakterIndexRoute: VakterIndexRoute,
+  FravaerIndexRoute: FravaerIndexRoute,
+  InnstillingerIndexRoute: InnstillingerIndexRoute,
 }
-export const routeTree = rootRouteImport
-  ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
+export const routeTree = rootRouteImport._addFileChildren(rootRouteChildren)._addRouteTypes<FileRouteTypes>()

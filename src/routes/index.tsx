@@ -54,7 +54,7 @@ function Dashboard() {
   return (
     <Layout>
       <div className="p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Dashboard</h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-1">Velkommen 👋</h1>
         <p className="text-gray-500 mb-8">Oversikt over bedriften din</p>
 
         <div className="grid grid-cols-3 gap-4 mb-8">

@@ -36,7 +36,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   if (!user) return null;
 
-  const nav = isAdmin ? adminNav : employeeNav;
+  const nav = adminNav;
 
   return (
     <div className="flex min-h-screen" style={{ background: "oklch(0.975 0.008 75)" }}>

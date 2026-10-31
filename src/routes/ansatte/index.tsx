@@ -2,9 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
-import { Plus, Pencil, Trash2, Mail, Phone, Briefcase } from "lucide-react";
+import { Plus, Pencil, Trash2, Mail, Phone, Briefcase, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { EmployeeDialog } from "@/components/EmployeeDialog";
+import { InviteEmployeeDialog } from "@/components/InviteEmployeeDialog";
 
 export const Route = createFileRoute("/ansatte/")({
   component: AnsattePage,
@@ -14,6 +15,7 @@ function AnsattePage() {
   const qc = useQueryClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any>(null);
+  const [inviteOpen, setInviteOpen] = useState(false);
 
   const { data: employees = [], isLoading } = useQuery({
     queryKey: ["employees"],
@@ -44,12 +46,20 @@ function AnsattePage() {
             <h1 className="text-2xl font-bold text-gray-900">Ansatte</h1>
             <p className="text-gray-500">{employees.length} ansatte registrert</p>
           </div>
-          <button
-            onClick={() => { setEditing(null); setOpen(true); }}
-            className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700"
-          >
-            <Plus className="w-4 h-4" /> Legg til ansatt
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => setInviteOpen(true)}
+              className="flex items-center gap-2 border border-indigo-200 text-indigo-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-50"
+            >
+              <UserPlus className="w-4 h-4" /> Inviter ansatt
+            </button>
+            <button
+              onClick={() => { setEditing(null); setOpen(true); }}
+              className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700"
+            >
+              <Plus className="w-4 h-4" /> Legg til ansatt
+            </button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -129,6 +139,11 @@ function AnsattePage() {
         open={open}
         onClose={() => setOpen(false)}
         employee={editing}
+      />
+      <InviteEmployeeDialog
+        open={inviteOpen}
+        onClose={() => setInviteOpen(false)}
+        employees={employees}
       />
     </Layout>
   );

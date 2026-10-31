@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Layout } from "@/components/Layout";
 import { Plus, Trash2, Calendar } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/fravaer/")({
   component: FravaerPage,
@@ -11,6 +12,7 @@ export const Route = createFileRoute("/fravaer/")({
 
 function FravaerPage() {
   const qc = useQueryClient();
+  const { isAdmin, profile } = useAuth();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
     employee_id: "",
@@ -30,22 +32,33 @@ function FravaerPage() {
   const { data: absences = [], isLoading } = useQuery({
     queryKey: ["absences"],
     queryFn: async () => {
-      const { data } = await supabase
+      let query = supabase
         .from("absences")
         .select("*, employees(name, color)")
         .order("start_date");
+
+      // Ansatte ser kun eget fravær
+      if (!isAdmin && profile?.employee_id) {
+        query = query.eq("employee_id", profile.employee_id);
+      }
+
+      const { data } = await query;
       return data ?? [];
     },
   });
 
   const addMutation = useMutation({
     mutationFn: async () => {
-      await supabase.from("absences").insert(form);
+      const data = {
+        ...form,
+        employee_id: isAdmin ? form.employee_id : (profile?.employee_id ?? ""),
+      };
+      await supabase.from("absences").insert(data);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["absences"] });
       setOpen(false);
-      setForm({ employee_id: "", start_date: "", end_date: "", reason: "" });
+      setForm({ employee_id: isAdmin ? "" : (profile?.employee_id ?? ""), start_date: "", end_date: "", reason: "" });
     },
   });
 
@@ -106,19 +119,23 @@ function FravaerPage() {
           <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
             <h2 className="text-lg font-semibold mb-5">Registrer fravær</h2>
             <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Ansatt *</label>
-                <select
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  value={form.employee_id}
-                  onChange={(e) => setForm({ ...form, employee_id: e.target.value })}
-                >
-                  <option value="">Velg ansatt</option>
-                  {employees.map((e) => (
-                    <option key={e.id} value={e.id}>{e.name}</option>
-                  ))}
-                </select>
-              </div>
+              {isAdmin ? (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Ansatt *</label>
+                  <select
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    value={form.employee_id}
+                    onChange={(e) => setForm({ ...form, employee_id: e.target.value })}
+                  >
+                    <option value="">Velg ansatt</option>
+                    {employees.map((e) => (
+                      <option key={e.id} value={e.id}>{e.name}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <input type="hidden" value={profile?.employee_id ?? ""} />
+              )}
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Fra *</label>

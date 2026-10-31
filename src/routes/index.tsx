@@ -53,95 +53,75 @@ function Dashboard() {
 
   return (
     <Layout>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">Velkommen 👋</h1>
-        <p className="text-gray-500 mb-8">Oversikt over bedriften din</p>
-
-        <div className="grid grid-cols-3 gap-4 mb-8">
-          <StatCard
-            icon={<Users className="w-5 h-5 text-indigo-600" />}
-            label="Ansatte"
-            value={employees.length}
-            bg="bg-indigo-50"
-          />
-          <StatCard
-            icon={<Calendar className="w-5 h-5 text-emerald-600" />}
-            label="Vakter denne uken"
-            value={shifts.length}
-            bg="bg-emerald-50"
-          />
-          <StatCard
-            icon={<Clock className="w-5 h-5 text-amber-600" />}
-            label="Fravær kommende"
-            value={absences.length}
-            bg="bg-amber-50"
-          />
+      <div className="p-8 max-w-5xl">
+        <div className="mb-8">
+          <h1 className="text-2xl font-bold mb-1" style={{ color: "oklch(0.16 0.01 60)" }}>Oversikt</h1>
+          <p className="text-sm" style={{ color: "oklch(0.48 0.01 60)" }}>
+            {new Date().toLocaleDateString("nb-NO", { weekday: "long", day: "numeric", month: "long" })}
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-gray-900">Vakter i dag</h2>
-              <Link to="/vakter" className="text-sm text-indigo-600 hover:underline flex items-center gap-1">
-                Se alle <ArrowRight className="w-3 h-3" />
-              </Link>
+        <div className="grid grid-cols-3 gap-4 mb-8">
+          {[
+            { icon: Users, label: "Ansatte", value: employees.length },
+            { icon: Calendar, label: "Vakter denne uken", value: shifts.length },
+            { icon: Clock, label: "Kommende fravær", value: absences.length },
+          ].map(({ icon: Icon, label, value }) => (
+            <div key={label} className="bg-white rounded-xl border p-5" style={{ borderColor: "oklch(0.9 0.008 75)" }}>
+              <p className="text-3xl font-bold mb-1" style={{ color: "oklch(0.16 0.01 60)" }}>{value}</p>
+              <p className="text-sm" style={{ color: "oklch(0.48 0.01 60)" }}>{label}</p>
             </div>
-            {todayShifts.length === 0 ? (
-              <p className="text-sm text-gray-400">Ingen vakter registrert i dag</p>
-            ) : (
-              <div className="space-y-2">
-                {todayShifts.map((s) => {
-                  const emp = employees.find((e) => e.id === s.employee_id);
-                  return (
-                    <div key={s.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                      <div className="flex items-center gap-2">
-                        <div
-                          className="w-2 h-2 rounded-full"
-                          style={{ backgroundColor: emp?.color ?? "#6366f1" }}
-                        />
-                        <span className="text-sm text-gray-900">{emp?.name ?? "Ukjent"}</span>
-                      </div>
-                      <span className="text-sm text-gray-500">{s.start_time.slice(0, 5)} – {s.end_time.slice(0, 5)}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
+          ))}
+        </div>
 
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-gray-900">Kommende fravær</h2>
-              <Link to="/fravaer" className="text-sm text-indigo-600 hover:underline flex items-center gap-1">
-                Se alle <ArrowRight className="w-3 h-3" />
-              </Link>
-            </div>
-            {absences.length === 0 ? (
-              <p className="text-sm text-gray-400">Ingen registrert fravær</p>
+        <div className="grid grid-cols-2 gap-4">
+          <Card title="Vakter i dag" to="/vakter">
+            {todayShifts.length === 0 ? (
+              <p className="text-sm py-4 text-center" style={{ color: "oklch(0.65 0.01 60)" }}>Ingen vakter i dag</p>
             ) : (
-              <div className="space-y-2">
-                {absences.map((a: any) => (
-                  <div key={a.id} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-                    <span className="text-sm text-gray-900">{a.employees?.name}</span>
-                    <span className="text-sm text-gray-500">
-                      {a.start_date} – {a.end_date}
+              todayShifts.map((s) => {
+                const emp = employees.find((e) => e.id === s.employee_id);
+                return (
+                  <div key={s.id} className="flex items-center justify-between py-2.5 border-b last:border-0" style={{ borderColor: "oklch(0.95 0.008 75)" }}>
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: emp?.color ?? "#1C1917" }} />
+                      <span className="text-sm" style={{ color: "oklch(0.16 0.01 60)" }}>{emp?.name ?? "Ukjent"}</span>
+                    </div>
+                    <span className="text-sm tabular-nums" style={{ color: "oklch(0.48 0.01 60)" }}>
+                      {s.start_time.slice(0, 5)}–{s.end_time.slice(0, 5)}
                     </span>
                   </div>
-                ))}
-              </div>
+                );
+              })
             )}
-          </div>
+          </Card>
+
+          <Card title="Kommende fravær" to="/fravaer">
+            {absences.length === 0 ? (
+              <p className="text-sm py-4 text-center" style={{ color: "oklch(0.65 0.01 60)" }}>Ingen registrert fravær</p>
+            ) : (
+              absences.map((a: any) => (
+                <div key={a.id} className="flex items-center justify-between py-2.5 border-b last:border-0" style={{ borderColor: "oklch(0.95 0.008 75)" }}>
+                  <span className="text-sm" style={{ color: "oklch(0.16 0.01 60)" }}>{a.employees?.name}</span>
+                  <span className="text-sm tabular-nums" style={{ color: "oklch(0.48 0.01 60)" }}>
+                    {a.start_date} – {a.end_date}
+                  </span>
+                </div>
+              ))
+            )}
+          </Card>
         </div>
 
         {employees.length === 0 && (
-          <div className="mt-8 bg-indigo-50 border border-indigo-200 rounded-xl p-6 text-center">
-            <p className="text-indigo-700 font-medium mb-2">Kom i gang!</p>
-            <p className="text-indigo-600 text-sm mb-4">Legg til ansatte for å begynne å planlegge vakter.</p>
+          <div className="mt-6 border rounded-xl p-6" style={{ borderColor: "oklch(0.9 0.008 75)", background: "white" }}>
+            <p className="font-medium mb-1" style={{ color: "oklch(0.16 0.01 60)" }}>Start med å legge til ansatte</p>
+            <p className="text-sm mb-4" style={{ color: "oklch(0.48 0.01 60)" }}>Legg til dine ansatte for å begynne å generere vaktplaner.</p>
             <Link
               to="/ansatte"
-              className="inline-flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700"
+              className="inline-flex items-center gap-2 text-sm font-medium px-4 py-2 rounded-lg text-white"
+              style={{ background: "oklch(0.16 0.01 60)" }}
             >
-              <Users className="w-4 h-4" /> Legg til ansatte
+              Legg til ansatte <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         )}
@@ -150,14 +130,16 @@ function Dashboard() {
   );
 }
 
-function StatCard({ icon, label, value, bg }: { icon: React.ReactNode; label: string; value: number; bg: string }) {
+function Card({ title, to, children }: { title: string; to: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center gap-4">
-      <div className={`w-10 h-10 rounded-lg ${bg} flex items-center justify-center`}>{icon}</div>
-      <div>
-        <p className="text-2xl font-bold text-gray-900">{value}</p>
-        <p className="text-sm text-gray-500">{label}</p>
+    <div className="bg-white rounded-xl border p-5" style={{ borderColor: "oklch(0.9 0.008 75)" }}>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-semibold" style={{ color: "oklch(0.16 0.01 60)" }}>{title}</h2>
+        <Link to={to} className="text-xs flex items-center gap-1" style={{ color: "oklch(0.48 0.01 60)" }}>
+          Se alle <ArrowRight className="w-3 h-3" />
+        </Link>
       </div>
+      {children}
     </div>
   );
 }

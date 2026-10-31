@@ -1,7 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Calendar } from "lucide-react";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -24,67 +23,84 @@ function LoginPage() {
     setError("");
     setLoading(true);
     const { error } = await signIn(email, password);
-    if (error) setError("Feil e-post eller passord");
+    if (error) setError("Feil e-post eller passord. Prøv igjen.");
     setLoading(false);
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center mx-auto mb-4">
-            <Calendar className="w-6 h-6 text-white" />
+    <div className="min-h-screen flex" style={{ background: "oklch(0.975 0.008 75)" }}>
+      <div className="flex-1 flex items-center justify-center px-8">
+        <div className="w-full max-w-sm">
+          <div className="mb-10">
+            <div className="flex items-center gap-2 mb-8">
+              <div className="w-6 h-6 rounded bg-[oklch(0.16_0.01_60)] flex items-center justify-center">
+                <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <span className="text-sm font-semibold tracking-tight" style={{ color: "oklch(0.16 0.01 60)" }}>ShiftPlan</span>
+            </div>
+            <h1 className="text-3xl font-bold mb-2" style={{ color: "oklch(0.16 0.01 60)" }}>Velkommen tilbake</h1>
+            <p className="text-sm" style={{ color: "oklch(0.48 0.01 60)" }}>Logg inn for å administrere vaktplanen</p>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">ShiftPlan</h1>
-          <p className="text-gray-500 mt-1">Logg inn på din konto</p>
-        </div>
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">E-post</label>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: "oklch(0.16 0.01 60)" }}>E-post</label>
               <input
                 type="email"
                 required
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full bg-white border rounded-lg px-3.5 py-2.5 text-sm outline-none transition-all"
+                style={{ borderColor: "oklch(0.9 0.008 75)", color: "oklch(0.16 0.01 60)" }}
+                onFocus={e => (e.target.style.borderColor = "oklch(0.65 0.18 42)")}
+                onBlur={e => (e.target.style.borderColor = "oklch(0.9 0.008 75)")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="din@epost.no"
-                autoComplete="email"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Passord</label>
+              <label className="block text-sm font-medium mb-1.5" style={{ color: "oklch(0.16 0.01 60)" }}>Passord</label>
               <input
                 type="password"
                 required
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full bg-white border rounded-lg px-3.5 py-2.5 text-sm outline-none transition-all"
+                style={{ borderColor: "oklch(0.9 0.008 75)", color: "oklch(0.16 0.01 60)" }}
+                onFocus={e => (e.target.style.borderColor = "oklch(0.65 0.18 42)")}
+                onBlur={e => (e.target.style.borderColor = "oklch(0.9 0.008 75)")}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                autoComplete="current-password"
               />
             </div>
 
             {error && (
-              <p className="text-sm text-red-600 bg-red-50 rounded-lg px-3 py-2">{error}</p>
+              <p className="text-sm px-3.5 py-2.5 rounded-lg bg-red-50 text-red-600">{error}</p>
             )}
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 disabled:opacity-50"
+              className="w-full py-2.5 rounded-lg text-sm font-medium text-white transition-opacity disabled:opacity-50"
+              style={{ background: "oklch(0.16 0.01 60)" }}
             >
               {loading ? "Logger inn..." : "Logg inn"}
             </button>
           </form>
 
-          <p className="text-center text-sm text-gray-500 mt-4">
-            Har du ikke konto?{" "}
-            <Link to="/register" className="text-indigo-600 hover:underline font-medium">
+          <p className="text-sm mt-6 text-center" style={{ color: "oklch(0.48 0.01 60)" }}>
+            Ingen konto?{" "}
+            <Link to="/register" className="font-medium underline underline-offset-2" style={{ color: "oklch(0.16 0.01 60)" }}>
               Opprett konto
             </Link>
           </p>
+        </div>
+      </div>
+
+      <div className="hidden lg:flex flex-1 items-center justify-center p-12" style={{ background: "oklch(0.16 0.01 60)" }}>
+        <div className="max-w-sm text-center">
+          <p className="text-2xl font-bold text-white mb-3">Smart vaktplanlegging</p>
+          <p className="text-sm" style={{ color: "oklch(0.7 0.01 60)" }}>AI fordeler vakter rettferdig basert på ansattes timekrav og tilgjengelighet.</p>
         </div>
       </div>
     </div>

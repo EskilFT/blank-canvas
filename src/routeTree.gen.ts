@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as RegisterRouteImport } from './routes/register'
 import { Route as AnsatteIndexRouteImport } from './routes/ansatte/index'
 import { Route as VakterIndexRouteImport } from './routes/vakter/index'
 import { Route as FravaerIndexRouteImport } from './routes/fravaer/index'
@@ -25,6 +26,12 @@ const IndexRoute = IndexRouteImport.update({
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -55,6 +62,7 @@ const InnstillingerIndexRoute = InnstillingerIndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/ansatte/': typeof AnsatteIndexRoute
   '/vakter/': typeof VakterIndexRoute
   '/fravaer/': typeof FravaerIndexRoute
@@ -63,6 +71,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/ansatte': typeof AnsatteIndexRoute
   '/vakter': typeof VakterIndexRoute
   '/fravaer': typeof FravaerIndexRoute
@@ -72,6 +81,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
   '/ansatte/': typeof AnsatteIndexRoute
   '/vakter/': typeof VakterIndexRoute
   '/fravaer/': typeof FravaerIndexRoute
@@ -79,15 +89,16 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/ansatte/' | '/vakter/' | '/fravaer/' | '/innstillinger/'
+  fullPaths: '/' | '/login' | '/register' | '/ansatte/' | '/vakter/' | '/fravaer/' | '/innstillinger/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/ansatte' | '/vakter' | '/fravaer' | '/innstillinger'
-  id: '__root__' | '/' | '/login' | '/ansatte/' | '/vakter/' | '/fravaer/' | '/innstillinger/'
+  to: '/' | '/login' | '/register' | '/ansatte' | '/vakter' | '/fravaer' | '/innstillinger'
+  id: '__root__' | '/' | '/login' | '/register' | '/ansatte/' | '/vakter/' | '/fravaer/' | '/innstillinger/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
   AnsatteIndexRoute: typeof AnsatteIndexRoute
   VakterIndexRoute: typeof VakterIndexRoute
   FravaerIndexRoute: typeof FravaerIndexRoute
@@ -97,6 +108,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
   AnsatteIndexRoute: AnsatteIndexRoute,
   VakterIndexRoute: VakterIndexRoute,
   FravaerIndexRoute: FravaerIndexRoute,
